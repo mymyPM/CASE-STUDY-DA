@@ -1,0 +1,94 @@
+<h2>Đánh giá chất lượng phục vụ khách hàng</h2>
+<p>Case study DA về xử lý khiếu nại ATM phục vụ xét thưởng cuối năm</p>
+<p>Kỳ phân tích 01-12/2025 | Dữ liệu giả lập | Nhân viên giả định EMP-01</p>
+<h3>1 Bài toán doanh nghiệp</h3>
+<p>Doanh nghiệp cần tổng hợp kết quả phục vụ của nhân viên tiếp nhận và xử lý khiếu nại để có thêm căn cứ xét thưởng cuối năm. Báo cáo cần cho thấy nhân viên có phản hồi sớm, xử lý đúng và theo sát yêu cầu hay không, khách phải chờ bao lâu, có phản hồi không hài lòng và nguyên nhân liên quan đến phần việc nào.</p>
+<p>Mốc hoàn tiền trong 5 ngày làm việc là một yêu cầu về thời hạn, nhưng không phản ánh đầy đủ chất lượng phục vụ. Hai hồ sơ cùng đúng hạn có thể khác nhau về thời gian phản hồi, việc phải kiểm tra lại và trải nghiệm của khách. Vì vậy, phân tích kết hợp tốc độ, chất lượng hồ sơ và phản hồi khách hàng.</p>
+<h3>2 Phạm vi và quyết định cần hỗ trợ</h3>
+<p>120 yêu cầu khiếu nại giao dịch pending/timeout: tài khoản bị trừ tiền nhưng ATM chưa nhả tiền. Mỗi tháng 10 vụ, do một nhân viên giả định EMP-01 phụ trách.</p>
+<p>Báo cáo tổng hợp lịch sử theo tháng và cả năm, không phải hệ thống giám sát tiến độ thời gian thực.</p>
+<p>Đầu ra là bảng bằng chứng để người quản lý xem xét ghi nhận hoặc khen thưởng, kèm những hồ sơ cần đọc lại. Không chấm chuyên cần, không tự tính số tiền thưởng.</p>
+<h3>3 Quy trình nghiệp vụ</h3>
+<p>Tiếp nhận và phân công yêu cầu; phản hồi đầu tiên cho khách; kiểm tra thông tin, log và camera; hoàn tất xác minh; gửi kết quả để quỹ chính/kế toán hạch toán; ghi nhận khảo sát và phản hồi sau xử lý.</p>
+<p>Thời điểm xác minh xong được tách khỏi thời điểm hoàn tiền. Phần chờ hạch toán vẫn là thời gian chờ của khách, nhưng không tự động được tính là chậm trễ của nhân viên tiếp nhận.</p>
+<h3>4 Giả định của bộ dữ liệu</h3>
+<div class="table-scroll"><table class="report-table">
+<tr><th>Thành phần</th><th>Quy ước</th></tr>
+<tr><td>Phạm vi giả lập</td><td>Mọi mã hồ sơ, thời điểm, điểm khảo sát, ghi chú và phân loại trách nhiệm đều là giả lập. Không mô tả một nhân viên thật.</td></tr>
+<tr><td>Hoàn tiền</td><td>8 vụ/tháng hoàn trong ngày, 2 vụ nhận muộn hoàn ngày làm việc tiếp theo; 120/120 vụ đúng SLA theo thiết kế.</td></tr>
+<tr><td>Phản hồi ban đầu</td><td>Mốc 30 phút làm việc là giả định để luyện phân tích, chưa phải cam kết đã được công ty phê duyệt.</td></tr>
+<tr><td>Phân công</td><td>Thời điểm tiếp nhận đồng thời là thời điểm giao nhân viên. Không mô hình hóa thời gian chờ phân công.</td></tr>
+<tr><td>Giờ và lịch</td><td>08:00-17:00, mô hình liên tục chưa trừ giờ nghỉ trưa. Thứ Hai đến thứ Sáu, trừ các ngày nghỉ đã nhập ở Guide.</td></tr>
+</table></div>
+<h3>5 Chỉ số và cách đọc</h3>
+<div class="table-scroll"><table class="report-table">
+<tr><th>Nhóm</th><th>Chỉ số</th><th>Định nghĩa</th></tr>
+<tr><td>Tốc độ hỗ trợ</td><td>Phút làm việc đến phản hồi đầu tiên</td><td>Từ lúc nhận yêu cầu đến lần phản hồi đầu tiên; loại đêm, cuối tuần và ngày nghỉ đã khai báo.</td></tr>
+<tr><td>Tốc độ hỗ trợ</td><td>Tỷ lệ phản hồi trong mục tiêu</td><td>Số vụ phản hồi không quá 30 phút làm việc / tổng số vụ.</td></tr>
+<tr><td>Xử lý nghiệp vụ</td><td>Ngày làm việc đến xác minh xong</td><td>Đo phần việc xác minh, ngày nhận là ngày 0.</td></tr>
+<tr><td>Chất lượng hồ sơ</td><td>Tỷ lệ phải kiểm tra/sửa lại</td><td>Số hồ sơ có rework_required = 1 / tổng số hồ sơ. Cần đọc nguyên nhân trước khi đánh giá.</td></tr>
+<tr><td>Trải nghiệm khách</td><td>Thời gian chờ hoàn tiền</td><td>Giờ thực tế từ nhận khiếu nại đến hạch toán hoàn tiền. Bao gồm cả ngoài giờ.</td></tr>
+<tr><td>Phối hợp kế toán</td><td>Phút làm việc chờ hạch toán</td><td>Từ xác minh xong đến hoàn tiền; báo cáo riêng, không gộp vào tốc độ nhân viên.</td></tr>
+<tr><td>Thời hạn dịch vụ</td><td>Tỷ lệ hoàn tiền đúng SLA</td><td>Hoàn tiền trước hoặc đúng 17:00 của ngày làm việc thứ 5 sau ngày tiếp nhận.</td></tr>
+<tr><td>Phản hồi khách</td><td>Điểm CSAT trung bình và độ phủ</td><td>Điểm trung bình trên các khảo sát được trả lời; luôn báo cả số phản hồi / tổng số vụ.</td></tr>
+<tr><td>Phản hồi khách</td><td>Đánh giá thấp và bối cảnh</td><td>Điểm 1-2/5 là đánh giá thấp trong bài. Tách bối cảnh Employee, System và Process theo ghi nhận người rà soát.</td></tr>
+</table></div>
+<h4>Các phân biệt quan trọng</h4>
+<p>Không có khảo sát không đồng nghĩa khách không hài lòng. Ô trống không được tính thành điểm 0.</p>
+<p>Điểm thấp là tín hiệu cần đọc phản hồi, không phải kết luận nhân viên làm sai. Mã bối cảnh trách nhiệm trong dữ liệu là ghi nhận rà soát giả lập, không được suy ra tự động từ điểm số.</p>
+<p>Hồ sơ phải làm lại có thể do thiếu thông tin từ nhiều phía. Khi dùng dữ liệu thật, cần lưu lý do và đánh giá phần nhân viên có thể kiểm soát.</p>
+<p>Mỗi tỷ lệ năm được tính từ tổng tử số và mẫu số, không lấy trung bình đơn giản các tỷ lệ tháng.</p>
+<h3>6 Kết quả tổng hợp của nhân viên giả định</h3>
+<div class="table-scroll"><table class="report-table">
+<tr><th>Chỉ số</th><th>Kết quả năm 2025</th></tr>
+<tr><td>Số yêu cầu phụ trách</td><td>120</td></tr>
+<tr><td>Phản hồi đầu tiên trung bình</td><td>21.29 phút làm việc</td></tr>
+<tr><td>Phản hồi trong 30 phút</td><td>112/120 vụ, tương đương 93,33%</td></tr>
+<tr><td>Phản hồi trên 30 phút</td><td>8 vụ</td></tr>
+<tr><td>Hoàn tiền đúng SLA</td><td>120/120 vụ, tương đương 100%</td></tr>
+<tr><td>Hoàn tiền trong ngày</td><td>96/120 vụ, tương đương 80%</td></tr>
+<tr><td>Hồ sơ phải kiểm tra/sửa lại</td><td>4/120 vụ, tương đương 3,33%</td></tr>
+<tr><td>Khảo sát có trả lời</td><td>97/120 vụ, độ phủ 80,83%</td></tr>
+<tr><td>CSAT trung bình</td><td>4.36/5, tính trên 97 phản hồi</td></tr>
+<tr><td>Đánh giá thấp</td><td>6/97 phản hồi, tương đương 6,19%</td></tr>
+<tr><td>Bối cảnh đánh giá thấp</td><td>3 liên quan hỗ trợ; 2 liên quan lỗi ATM; 1 liên quan thời điểm hạch toán</td></tr>
+<tr><td>Hồ sơ cần xem lại bối cảnh</td><td>12 hồ sơ duy nhất, không cộng trùng giữa các dấu hiệu</td></tr>
+</table></div>
+<h4>Kết luận phục vụ cuộc họp xét thưởng</h4>
+<p>Trong kịch bản này, EMP-01 đáp ứng mốc hoàn tiền và phản hồi trong mục tiêu ở phần lớn hồ sơ. Kết quả cho thấy các điểm có thể được ghi nhận khi xét thưởng. Tuy nhiên, cần đọc lại 8 vụ phản hồi chậm, 4 vụ cần kiểm tra/sửa lại và 6 đánh giá thấp trước khi chốt nhận xét về chất lượng phục vụ.</p>
+<p>Có 12 hồ sơ duy nhất xuất hiện ít nhất một dấu hiệu cần rà soát. Một hồ sơ có thể vừa phản hồi chậm vừa bị yêu cầu kiểm tra lại, nên không cộng cơ học 8 + 4 + 6 thành số vụ cần xem xét.</p>
+<p>Ba phản hồi thấp được gắn bối cảnh hỗ trợ của nhân viên là nội dung cần làm rõ. Ba phản hồi còn lại phản ánh vấn đề hệ thống hoặc quy trình hạch toán, không nên được mặc định trừ vào kết quả cá nhân. Việc xác nhận cần dựa trên nội dung trao đổi và chứng cứ thực tế.</p>
+<p>Báo cáo không xếp hạng, không đưa ra điểm thưởng tổng hợp hoặc mức tiền thưởng. Mức ghi nhận cuối cùng cần được đối chiếu với chính sách thưởng và phần việc khác của nhân viên.</p>
+<h3>7 Hồ sơ minh họa cần rà soát</h3>
+<div class="table-scroll"><table class="report-table">
+<tr><th>Mã hồ sơ</th><th>Phản hồi giả lập</th><th>Bối cảnh rà soát</th></tr>
+<tr><td>CASE-02-003</td><td>Phản hồi ban đầu chậm</td><td>Employee</td></tr>
+<tr><td>CASE-03-002</td><td>Bất tiện do lỗi ATM</td><td>System</td></tr>
+<tr><td>CASE-06-002</td><td>Giải thích chưa rõ</td><td>Employee</td></tr>
+<tr><td>CASE-07-009</td><td>Chờ đợt hạch toán hoàn tiền</td><td>Process</td></tr>
+<tr><td>CASE-10-009</td><td>Thiếu cập nhật tiến độ</td><td>Employee</td></tr>
+<tr><td>CASE-11-010</td><td>Bất tiện do lỗi ATM</td><td>System</td></tr>
+</table></div>
+<h4>Cách dùng khi xét thưởng</h4>
+<p>Bắt đầu bằng khối lượng hồ sơ và kết quả cả năm. Kiểm tra phạm vi công việc có tương đương giữa các giai đoạn hay không.</p>
+<p>Đọc các chỉ số tốc độ, chất lượng và mức hài lòng cùng nhau. Không thưởng chỉ vì nhanh, cũng không kết luận phục vụ tốt chỉ vì không quá SLA.</p>
+<p>Lọc needs_review = 1 ở Cases để tìm những hồ sơ cần xem lại. Đọc feedback_note, kiểm tra trách nhiệm được gắn có bằng chứng hay chưa.</p>
+<p>Ghi nhận kết quả phục vụ đã được xác nhận. Các vấn đề thuộc hệ thống hoặc quy trình chuyển sang nội dung cải tiến phối hợp, thay vì tự động quy trách nhiệm cho nhân viên.</p>
+<h4>Giới hạn của kết luận</h4>
+<p>Đây là dữ liệu thực hành được tạo để minh họa cách xây báo cáo. Tỷ lệ đúng SLA 100% và phân bổ 80/20 đã được chọn trước; không phải kết quả quan sát ở ngân hàng thật. Các điểm CSAT và nội dung phản hồi cũng không phải ý kiến khách hàng thật.</p>
+<p>Chỉ có một nhân viên giả định nên bài không chứng minh người này làm tốt hơn đồng nghiệp. Không có dữ liệu chấm công, nghỉ phép hoặc năng suất theo giờ, vì vậy không đo chuyên cần hay số hồ sơ trên mỗi giờ làm việc.</p>
+<p>97 phản hồi khảo sát không đại diện chắc chắn cho toàn bộ 120 khách hàng. Nhóm không trả lời có thể có trải nghiệm khác. Kết quả xét thưởng cần thêm đánh giá quản lý và các nguồn bằng chứng khác nếu triển khai thực tế.</p>
+<h3>8 Dữ liệu và cách chạy lại</h3>
+<h4>Excel</h4>
+<p>Summary gồm kết quả năm và từng tháng, cùng biểu đồ tốc độ phản hồi và bối cảnh đánh giá thấp. Cases gồm 120 hồ sơ: A:L là dữ liệu giả lập, M:V là công thức. Guide ghi định nghĩa, ngưỡng phân tích, giờ làm việc và danh sách ngày nghỉ. Tất cả nhãn trong Excel dùng tiếng Anh, tháng được cố định Jan-Dec.</p>
+<p>Phút làm việc được tính theo lịch 08:00-17:00, chưa trừ giờ nghỉ trưa. Công thức sử dụng NETWORKDAYS và phần giờ trong ngày. Nếu thay lịch ca thực tế, phải cập nhật cách tính phút; không chỉ đổi tên chỉ số. Nếu thay ngày nghỉ, cần cập nhật dữ liệu sự kiện và bảng lịch trong SQL cho đồng nhất.</p>
+<h4>SQL</h4>
+<p>Chạy file SQL trên một cơ sở dữ liệu SQLite 3.25 trở lên còn trống. File tạo bảng cases, settings, work_calendar và view service_metrics. Q1 kiểm tra chất lượng dữ liệu; Q2 tổng hợp nhân viên; Q3 tổng hợp tháng; Q4-Q5 đọc bối cảnh phản hồi và hồ sơ cần xem lại; Q6 tách thời gian từng giai đoạn; Q7 dùng ROW_NUMBER; Q8 tìm hồ sơ quá SLA.</p>
+<p>Kiểm tra chéo chuẩn: 120 hồ sơ, 112 phản hồi đúng mục tiêu, 4 hồ sơ làm lại, 97 khảo sát, 6 điểm thấp, trong đó 3 liên quan phần hỗ trợ. Các chỉ số ở từng hồ sơ đã được đối chiếu giữa SQL và Excel.</p>
+<h4>Bài tập kiểm tra</h4>
+<p>Trên bản sao, đổi mục tiêu phản hồi từ 30 xuống 29 phút. Số vụ đáp ứng phải giảm; 30 phút chỉ là ngưỡng giả định của bài.</p>
+<p>Điền điểm 1 vào một hồ sơ chưa có khảo sát. Số khảo sát và số điểm thấp tăng 1, nhưng phân loại trách nhiệm không tự đổi thành Employee.</p>
+<p>Chuyển thời điểm hoàn tiền của một hồ sơ sang sau hạn: cờ within_sla phải về 0. Không dùng thay đổi thử nghiệm làm bộ kết quả gốc.</p>
+<h4>Lịch nghỉ được chọn cho mô hình</h4>
+<p>Năm 2025: 01/01; 27-31/01; 07/04; 30/04; 01/05; 01-02/09. Giữ quy tắc thứ Hai đến thứ Sáu, không hoán đổi ngày làm việc thứ Bảy. Ngày 02/05 vẫn là ngày làm việc trong mô hình. Đây là lịch được chọn cho bài, không đại diện cho lịch của một ngân hàng cụ thể.</p>
+<p>Nguồn tham chiếu: Báo Điện tử Chính phủ, thông báo lịch nghỉ Tết và lễ năm 2025 ngày 03/12/2024; VPBank, thông báo lịch giao dịch Giỗ Tổ Hùng Vương ngày 26/03/2025. Đường dẫn đầy đủ lưu tại Guide trong Excel. Các lựa chọn nghỉ của doanh nghiệp có thể khác.</p>
